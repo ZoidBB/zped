@@ -2,7 +2,7 @@
 Zoidberg's Preempting Event Dispatcher
 ======================================
 
-.. image:: https://img.shields.io/circleci/project/github/zoidbb/zped/master.svg?style=for-the-badge   :target: 
+.. image:: https://img.shields.io/circleci/project/github/ZoidBB/zped/master.svg?style=for-the-badge   :target: 
 .. image:: https://img.shields.io/pypi/v/zped.svg?style=for-the-badge   :target: 
 
 --------------------------
