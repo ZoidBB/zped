@@ -13,7 +13,7 @@ class TriggerClass:
     @zped.triggerman()
     def modified_input_echoing_triggerman(_input):
         '''return unmodified _input'''
-        return input
+        return _input
 
     @zped.triggerman()
     def modified_output_echoing_triggerman(_input):
