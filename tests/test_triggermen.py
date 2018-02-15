@@ -25,22 +25,27 @@ class TriggerClass:
         return input
 
 def test_basic_triggerman():
+    '''triggerman() should result in pre and post execuation event registration'''
     assert "TriggerClass.basic_triggerman.pre-exec" in zped.__events__
     assert "TriggerClass.basic_triggerman.post-exec" in zped.__events__
 
 def test_named_triggerman():
+    '''triggerman() should use supplied custom names for pre and post execution event registration'''
     assert "custom-pre-exec" in zped.__events__
     assert "custom-post-exec" in zped.__events__
 
 def test_no_pre_exec_triggerman():
+    '''triggerman() should not register pre-execution events when instructed not to'''
     assert "TriggerClass.no_pre_exec_triggerman.pre-exec" not in zped.__events__
     assert "TriggerClass.no_pre_exec_triggerman.post-exec" in zped.__events__
 
 def test_no_post_exec_triggerman():
+    '''triggerman() should not register post-execution events when instructed not to'''
     assert "TriggerClass.no_post_exec_triggerman.pre-exec" in zped.__events__
     assert "TriggerClass.no_post_exec_triggerman.post-exec" not in zped.__events__
 
 def test_echoing_triggerman():
+    '''executing a triggerman()\'d function should follow expected function logic'''
     expected = uuid.uuid4()
     assert TriggerClass.echoing_triggerman(expected) == expected
 
