@@ -20,7 +20,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='zped',
-    version='0.1.2',  # Required
+    version='0.1.3',  # Required
     description='A poorly-architected event dispatcher that does magic and lets you do terrible things',  # Required
     long_description=long_description,  # Optional
     url='https://github.com/zoidbb/zped',  # Optional

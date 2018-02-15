@@ -79,3 +79,9 @@ def test_echoing_triggerman():
 
     expected = uuid.uuid4()
     assert TriggerClass.echoing_triggerman(expected) == expected
+
+def test_decorated_function_names():
+    """
+    decorated functions should have the same name as undecorated function
+    """
+    assert TriggerClass.basic_triggerman.__name__ is "basic_triggerman"

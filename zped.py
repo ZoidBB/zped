@@ -123,5 +123,6 @@ class ZPED:
                     args, kwargs, result = self.trigger(
                         post_exec_name, args, kwargs, result)
                 return result
+            decorated.__name__ = function.__name__ # clone origin function name
             return decorated
         return decorator
