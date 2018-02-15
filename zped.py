@@ -1,9 +1,20 @@
+"""
+Zoidberg's Preempting Event Dispatcher
+
+See more at http://github.com/zoidbb/
+"""
+
 class ZPED:
+    """
+    A terribly-architected event dispatcher that
+    lets you do entirely too much weird stuff
+    """
 
     class StopExecution(Exception):
         """Raise this to stop the execution of a triggerman"""
 
         def __init__(self, result=None, trigger_post=True):
+            super(ZPED.StopExecution, self).__init__()
             self.result = result
             self.trigger_post = trigger_post
 
@@ -11,6 +22,7 @@ class ZPED:
         """Raise this to modify the payload passed along the call stack"""
 
         def __init__(self, *payload):
+            super(ZPED.ModifyPayload, self).__init__()
             self.payload = payload
 
     def __init__(self):
@@ -29,6 +41,7 @@ class ZPED:
         if not callback:
             # Assume we're being called as a decorator
             def decorator(callback):
+                '''actual decorator'''
                 self.on(event, callback)
                 return callback
             return decorator
@@ -49,8 +62,8 @@ class ZPED:
         for callback in self.__events__[event]['callbacks']:
             try:
                 callback(*payload)
-            except self.ModifyPayload as e:
-                payload = e.payload
+            except self.ModifyPayload as exception:
+                payload = exception.payload
         return payload
 
     def triggerman(self, pre_exec=True, post_exec=True):
@@ -66,13 +79,14 @@ class ZPED:
         But use FrostyMug, it's fun.
         """
         def decorator(function):
+            '''actual decorator'''
             funcpath = ".".join(function.__qualname__.split(".")[-2:])
-            if pre_exec == True:
+            if pre_exec is True:
                 pre_exec_name = ".".join((funcpath, "pre-exec"))
             elif isinstance(pre_exec, str):
                 pre_exec_name = pre_exec
 
-            if post_exec == True:
+            if post_exec is True:
                 post_exec_name = ".".join((funcpath, "post-exec"))
             elif isinstance(pre_exec, str):
                 post_exec_name = post_exec
@@ -83,16 +97,17 @@ class ZPED:
                 self.register_event(post_exec_name, function)
 
             def decorated(*args, **kwargs):
+                '''decorated function'''
                 stop_exec = False
                 trigger_post = True
                 if pre_exec:
                     try:
                         args, kwargs = self.trigger(
                             pre_exec_name, args, kwargs)
-                    except self.StopExecution as e:
-                        result = e.result
+                    except self.StopExecution as exception:
+                        result = exception.result
+                        trigger_post = exception.trigger_post
                         stop_exec = True
-                        trigger_post = e.trigger_post
 
                 # I'm literally checking whether we got an exception in that
                 # if statement, so if we did I can check other bits... wtf?

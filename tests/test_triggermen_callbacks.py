@@ -7,22 +7,27 @@ zped = ZPED()
 class TriggerClass:
     @zped.triggerman()
     def basic_triggerman():
+        '''auto-named, auto-registered'''
         pass
 
     @zped.triggerman()
-    def modified_input_echoing_triggerman(input):
+    def modified_input_echoing_triggerman(_input):
+        '''return unmodified _input'''
         return input
 
     @zped.triggerman()
-    def modified_output_echoing_triggerman(input):
-        return input
+    def modified_output_echoing_triggerman(_input):
+        '''has return modified by listener'''
+        return _input
 
     @zped.triggerman()
     def stopped_triggerman_with_post_exec():
+        '''execution pre-empted by listener, still runs post'''
         assert 1 / 0  # junk assertion to indicate stuff broke
 
     @zped.triggerman()
     def stopped_triggerman_without_post_exec():
+        '''execution pre-empted by listener, doesn't run post'''
         assert 1 / 0  # junk assertion to indicate stuff broke
 
 
@@ -41,11 +46,11 @@ class CallbackClass:
     stopped_triggerman_without_post_exec_output = uuid.uuid4()
 
     @zped.on("TriggerClass.basic_triggerman.pre-exec")
-    def basic_triggerman_pre_exec(args, kwargs):
+    def basic_triggerman_pre_exec(*args):
         CallbackClass.basic_triggerman_pre_exec_called = True
 
     @zped.on("TriggerClass.basic_triggerman.post-exec")
-    def basic_triggerman_post_exec(args, kwargs, result):
+    def basic_triggerman_post_exec(*args):
         CallbackClass.basic_triggerman_post_exec_called = True
 
     @zped.on("TriggerClass.modified_input_echoing_triggerman.pre-exec")
@@ -56,27 +61,26 @@ class CallbackClass:
     @zped.on("TriggerClass.modified_output_echoing_triggerman.post-exec")
     def modified_output_echoing_triggerman_post_exec(args, kwargs, result):
         raise zped.ModifyPayload(
-            [
-                CallbackClass.modified_output_echoing_triggerman_output],
+            [CallbackClass.modified_output_echoing_triggerman_output],
             kwargs,
             CallbackClass.modified_output_echoing_triggerman_output)
 
     @zped.on("TriggerClass.stopped_triggerman_with_post_exec.pre-exec")
-    def stopped_triggerman_with_post_exec_pre_exec(args, kwargs):
+    def stopped_triggerman_with_post_exec_pre_exec(*args):
         raise zped.StopExecution(
             CallbackClass.stopped_triggerman_with_post_exec_output)
 
     @zped.on("TriggerClass.stopped_triggerman_with_post_exec.post-exec")
-    def stopped_triggerman_with_post_exec_post_exec(args, kwargs, result):
+    def stopped_triggerman_with_post_exec_post_exec(*args):
         CallbackClass.stopped_triggerman_with_post_exec_executed_post = True
 
     @zped.on("TriggerClass.stopped_triggerman_without_post_exec.pre-exec")
-    def stopped_triggerman_without_post_exec_pre_exec(args, kwargs):
+    def stopped_triggerman_without_post_exec_pre_exec(*args):
         raise zped.StopExecution(
             CallbackClass.stopped_triggerman_without_post_exec_output, False)
 
     @zped.on("TriggerClass.stopped_triggerman_without_post_exec.post-exec")
-    def stopped_triggerman_without_post_exec_post_exec(args, kwargs, result):
+    def stopped_triggerman_without_post_exec_post_exec(*args):
         CallbackClass.stopped_triggerman_without_post_exec_executed_post = True
 
 
@@ -101,7 +105,7 @@ def test_modified_input_echoing_triggerman():
     """
 
     assert TriggerClass.modified_input_echoing_triggerman(
-           uuid.uuid4()) == CallbackClass.modified_input_echoing_triggerman_input
+        uuid.uuid4()) == CallbackClass.modified_input_echoing_triggerman_input
 
 
 def test_modified_output_echoing_triggerman():
@@ -111,7 +115,7 @@ def test_modified_output_echoing_triggerman():
     """
 
     assert TriggerClass.modified_output_echoing_triggerman(
-           uuid.uuid4()) == CallbackClass.modified_output_echoing_triggerman_output
+        uuid.uuid4()) == CallbackClass.modified_output_echoing_triggerman_output
 
 
 def test_stopped_triggerman_with_post_exec():
@@ -122,7 +126,7 @@ def test_stopped_triggerman_with_post_exec():
 
     assert not CallbackClass.stopped_triggerman_with_post_exec_executed_post
     assert TriggerClass.stopped_triggerman_with_post_exec(
-           ) == CallbackClass.stopped_triggerman_with_post_exec_output
+    ) == CallbackClass.stopped_triggerman_with_post_exec_output
     assert CallbackClass.stopped_triggerman_with_post_exec_executed_post
 
 
@@ -132,8 +136,8 @@ def test_stopped_triggerman_without_post_exec():
     with exec_post set to False should execute neither function nor post-exec
     listener stack
     """
-    
+
     assert not CallbackClass.stopped_triggerman_without_post_exec_executed_post
     assert TriggerClass.stopped_triggerman_without_post_exec(
-           ) == CallbackClass.stopped_triggerman_without_post_exec_output
+    ) == CallbackClass.stopped_triggerman_without_post_exec_output
     assert not CallbackClass.stopped_triggerman_without_post_exec_executed_post

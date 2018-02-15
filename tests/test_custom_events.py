@@ -1,3 +1,6 @@
+"""
+Tests whether or not non-execution events work properly
+"""
 from zped import ZPED
 
 zped = ZPED()
@@ -10,6 +13,7 @@ def test_custom_event():
 
     @zped.on("my-custom-event")
     def callback():
+        '''marks True when executed'''
         test_custom_event.executed = True
     zped.trigger("my-custom-event")
     assert test_custom_event.executed

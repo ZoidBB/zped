@@ -1,3 +1,6 @@
+"""
+Tests tringgerman decorators, event registration, etc
+"""
 import uuid
 
 from zped import ZPED
@@ -5,25 +8,38 @@ zped = ZPED()
 
 
 class TriggerClass:
+    """
+    class holds all the triggermen
+    """
     @zped.triggerman()
+    @staticmethod
     def basic_triggerman():
+        '''auto-named, auto-registered'''
         pass
 
     @zped.triggerman("custom-pre-exec", "custom-post-exec")
+    @staticmethod
     def named_triggerman():
+        '''registered with custom event names'''
         pass
 
     @zped.triggerman(pre_exec=False)
+    @staticmethod
     def no_pre_exec_triggerman():
+        '''has no pre-execution event'''
         pass
 
     @zped.triggerman(post_exec=False)
+    @staticmethod
     def no_post_exec_triggerman():
+        '''has no post-execution event'''
         pass
 
     @zped.triggerman()
-    def echoing_triggerman(input):
-        return input
+    @staticmethod
+    def echoing_triggerman(_input):
+        '''returns unmodified _input'''
+        return _input
 
 
 def test_basic_triggerman():
