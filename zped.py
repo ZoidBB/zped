@@ -32,6 +32,13 @@ class ZPED:
         if not callback in self.__events__[event]['callbacks']:
             self.__events__[event]['callbacks'].append(callback)
 
+    def register_event(self, event, triggerman=None):
+        """Registers an event with the event dict"""
+        self.__events__[event] = {
+                "callbacks": [],
+                "triggerman": triggerman
+                }
+
     def trigger(self, event, *payload):
         """Runs the event call stack"""
         self._validate_event(event)
@@ -67,16 +74,9 @@ class ZPED:
                 post_exec_name = post_exec
 
             if pre_exec:
-                self.__events__[pre_exec_name] = {
-                        "callbacks": [],
-                        "triggerman": function
-                        }
-
+                self.register_event(pre_exec_name, function)
             if post_exec:
-                self.__events__[post_exec_name] = {
-                        "callbacks": [],
-                        "triggerman": function
-                        }
+                self.register_event(post_exec_name, function)
 
             def decorated(*args, **kwargs):
                 stop_exec = False
