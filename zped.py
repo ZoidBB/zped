@@ -19,6 +19,7 @@ class ZPED:
             raise NameError("`%s` is not a valid event for %s" % (event, self.__class__))
 
     def on(self, event, callback=None):
+        """Registers a function as a callback. Can be used as a decorator."""
         self._validate_event(event)
 
         if not callback:
@@ -32,6 +33,7 @@ class ZPED:
             self.__events__[event]['callbacks'].append(callback)
 
     def trigger(self, event, *payload):
+        """Runs the event call stack"""
         self._validate_event(event)
         for callback in self.__events__[event]['callbacks']:
             try:
