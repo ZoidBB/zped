@@ -20,7 +20,7 @@ with open(path.join(here, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='zped',
-    version='0.1.1',  # Required
+    version='0.1.2',  # Required
     description='A poorly-architected event dispatcher that does magic and lets you do terrible things',  # Required
     long_description=long_description,  # Optional
     url='https://github.com/zoidbb/zped',  # Optional
@@ -31,9 +31,7 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.3'
     ],
     keywords='event dispatcher',
     scripts=['zped.py'],
