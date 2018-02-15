@@ -2,12 +2,14 @@ class ZPED:
 
     class StopExecution(Exception):
         """Raise this to stop the execution of a triggerman"""
+
         def __init__(self, result=None, trigger_post=True):
             self.result = result
             self.trigger_post = trigger_post
 
     class ModifyPayload(Exception):
         """Raise this to modify the payload passed along the call stack"""
+
         def __init__(self, *payload):
             self.payload = payload
 
@@ -15,8 +17,10 @@ class ZPED:
         self.__events__ = {}
 
     def _validate_event(self, event):
-        if not event in self.__events__:
-            raise NameError("`%s` is not a valid event for %s" % (event, self.__class__))
+        if event not in self.__events__:
+            raise NameError(
+                "`%s` is not a valid event for %s" %
+                (event, self.__class__))
 
     def on(self, event, callback=None):
         """Registers a function as a callback. Can be used as a decorator."""
@@ -29,22 +33,22 @@ class ZPED:
                 return callback
             return decorator
 
-        if not callback in self.__events__[event]['callbacks']:
+        if callback not in self.__events__[event]['callbacks']:
             self.__events__[event]['callbacks'].append(callback)
 
     def register_event(self, event, triggerman=None):
         """Registers an event with the event dict"""
         self.__events__[event] = {
-                "callbacks": [],
-                "triggerman": triggerman
-                }
+            "callbacks": [],
+            "triggerman": triggerman
+        }
 
     def trigger(self, event, *payload):
         """Runs the event call stack"""
         self._validate_event(event)
         for callback in self.__events__[event]['callbacks']:
             try:
-                    callback(*payload)
+                callback(*payload)
             except self.ModifyPayload as e:
                 payload = e.payload
         return payload
@@ -83,7 +87,8 @@ class ZPED:
                 trigger_post = True
                 if pre_exec:
                     try:
-                        args, kwargs = self.trigger(pre_exec_name, args, kwargs)
+                        args, kwargs = self.trigger(
+                            pre_exec_name, args, kwargs)
                     except self.StopExecution as e:
                         result = e.result
                         stop_exec = True
@@ -100,7 +105,8 @@ class ZPED:
                         return result
 
                 if post_exec:
-                    args, kwargs, result = self.trigger(post_exec_name, args, kwargs, result)
+                    args, kwargs, result = self.trigger(
+                        post_exec_name, args, kwargs, result)
                 return result
             return decorated
         return decorator
